@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Matrix
+﻿namespace Matrix
 {
     internal static class Consts
     {
@@ -17,7 +11,7 @@ namespace Matrix
         /// <summary>
         /// The height of the matrix. Meaning how many rows we have in the matrix.
         /// </summary>
-        public const int MATRIX_HEIGHT = 55;
+        public const int MATRIX_HEIGHT = 60;
         /// <summary>
         /// The size of the matrix. Meaning how many cells we have in the matrix.
         /// </summary>
@@ -38,7 +32,7 @@ namespace Matrix
         /// The percentage of spawn chance for a rain drop.
         /// </summary>
         /// <remarks>In our implementation the chance is calculated for each empty column each loop.</remarks>
-        public const float PERCENTAGE_OF_SPAWN_CHANCE = 20;
+        public const float PERCENTAGE_OF_SPAWN_CHANCE = 15;
         /// <summary>
         /// Number of characters in a rain drop. (Rain drop which created the fading effect)
         /// </summary>

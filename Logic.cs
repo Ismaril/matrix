@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Matrix
+﻿namespace Matrix
 {
     internal class Logic
     {
@@ -38,11 +32,11 @@ namespace Matrix
             isMatrixInitialized = true;
         }
 
-        //private void PrintToConsole(string[] matrix)
-        //{
-        //    Console.Clear();
-        //    Console.Write(string.Join("", matrix));
-        //}
+        private void PrintToConsole(string[] matrix)
+        {
+            Console.Clear();
+            Console.Write(Print(matrix));
+        }
 
         private string Print(string[] matrix)
         {
@@ -108,13 +102,11 @@ namespace Matrix
                 {
                     int offsetRows = matrixIdx - Consts.MATRIX_WIDTH * i;
                     characterArrayColored[offsetRows] = Colors.colors[i] + matrix[offsetRows] + Colors.Color.Reset;
-                    //characterArrayColored[offsetRows] = matrix[offsetRows];
                 }
                 // The leading character always gets the leading color (default white)
                 else if (i == 0)
                 {
                     characterArrayColored[matrixIdx] = Colors.Color.White + matrix[matrixIdx] + Colors.Color.Reset;
-                    //characterArrayColored[matrixIdx] = matrix[matrixIdx];
                 }
             }
             return characterArrayColored;
@@ -171,26 +163,18 @@ namespace Matrix
             InitializeMatrix();
             UpdateLeadCharactersPositions();
             string[] x = ColoriseMatrix();
-            //PrintToConsole(x);
             return Print(x);
 
         }
         //public void Main()
         //{
-        //    InitializeMatrix();
         //    while (true)
         //    {
+        //        InitializeMatrix();
         //        UpdateLeadCharactersPositions();
         //        string[] x = ColoriseMatrix();
         //        PrintToConsole(x);
-        //        Thread.Sleep(UPDATE_TIME_MS);
-
-        //        //Task updateTask = Task.Run(() => UpdatestartingPositions());
-        //        //Task<string[]> coloriseTask = updateTask.ContinueWith(t => ColoriseMatrix());
-        //        //Task printTask = coloriseTask.ContinueWith(t => PrintToConsole(t.Result));
-
-        //        //Task.WaitAll(printTask);
-        //        //Thread.Sleep(10);
+        //        Thread.Sleep(1000);
         //    }
         //}
     }

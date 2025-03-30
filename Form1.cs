@@ -1,9 +1,4 @@
-
-
-using System.ComponentModel;
 using System.Text.RegularExpressions;
-using System.Windows.Forms;
-using static System.Windows.Forms.LinkLabel;
 using Timer = System.Windows.Forms.Timer;
 
 namespace Matrix
@@ -13,23 +8,12 @@ namespace Matrix
         const int WIDTH_OF_APPLICATION_WINDOW = 1920;
         const int HEIGHT_OF_APPLICATION_WINDOW = 1080;
         bool logicInitialized = false;
-        bool guiMatrixInitialized = false;
         Logic logic;
         private readonly Timer _timer = new Timer();
-        private PictureBox _pictureBox;
-        int looper = 0;
-        public const int MAIN_GRID_WIDTH = 8;
-        public const int MAIN_GRID_HEIGHT = 4;
-        private const int X_OFFSET_CENTRE_OF_SCREEN = 0;
-        private const byte PICTURE_BOX_LOCATION = MAIN_GRID_WIDGET_SIZE + MAIN_GRID_WIDGET_SIZE / 10;
-        private const byte MAIN_GRID_WIDGET_SIZE = 80;
-        private const string TEXT_PICTUREBOX = "pictureBox";
-        private Label[,] gridLabels = new Label[50, 50];
 
-        private readonly int cellWidth = 49;
-        private readonly int cellHeight = 53;
+        private readonly int cellWidth = 50;
+        private readonly int cellHeight = 50;
         private readonly Font monoFont = new Font("Consolas", 20);
-        private readonly Brush textBrush = Brushes.White;
         private void Form1_Load(object sender, EventArgs e)
         {
             Cursor.Hide(); // Hide mouse
@@ -43,9 +27,9 @@ namespace Matrix
         }
         private void TimerTick(object sender, EventArgs e)
         {
-            //DrawString();
             this.Invalidate();
         }
+
         private void InitLogic()
         {
             if (logicInitialized)
@@ -55,37 +39,22 @@ namespace Matrix
             logic = new Logic();
             logicInitialized = true;
         }
+
         public Form1()
         {
             InitializeComponent();
             InitLogic();
-            //InitGuiMatrix();
-            //OnPaint(null);
         }
+
         private void KeyArrowsDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape)
             {
-                System.Windows.Forms.Application.Exit();
+                Application.Exit();
             }
         }
-        public void DrawString()
-        {
-            System.Drawing.Graphics formGraphics = this.CreateGraphics();
-            //string drawString = "Sample Text";
-            string drawString = logic.Main();
-            System.Drawing.Font drawFont = new System.Drawing.Font("Arial", 12);
-            System.Drawing.SolidBrush drawBrush = new System.Drawing.SolidBrush(System.Drawing.Color.Black);
-            float x = 0.0F;
-            float y = 0.0F;
-            System.Drawing.StringFormat drawFormat = new System.Drawing.StringFormat();
-            formGraphics.DrawString(drawString, drawFont, drawBrush, x, y, drawFormat);
-            drawFont.Dispose();
-            drawBrush.Dispose();
-            formGraphics.Dispose();
-        }
 
-        protected override void OnPaint(System.Windows.Forms.PaintEventArgs e)
+        protected override void OnPaint(PaintEventArgs e)
         {
             //DrawString();
             var lines = logic.Main().Split('\n');

@@ -38,7 +38,7 @@
             this.Text = "Matrix";
             WindowState = System.Windows.Forms.FormWindowState.Maximized;
             FormBorderStyle = FormBorderStyle.None;
-            this.BackColor = System.Drawing.Color.Black;//(System.Drawing.Color)Consts.COLOR_BLACK;
+            this.BackColor = System.Drawing.Color.Black;
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
         }
