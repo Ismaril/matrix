@@ -7,17 +7,21 @@
         /// You can choose from 000 to 255.
         /// </summary>
         private const string RED = "000";
+        //private const string RED = "255";
+
         /// <summary>
         /// If 000, there will be no influence of the blue on the resulting color.
         /// You can choose from 000 to 255.
         /// </summary>
         private const string BLUE = "000";
+        //private const string BLUE = "255";
 
         /// <summary>
         /// Struct containing colors.
         /// </summary>
         public struct Color
         {
+            public static string White = $"\x1B[38;2;255;255;255m";
             public static string Tail1 = $"\x1B[38;2;{RED};255;{BLUE}m"; // Lightest
             public static string Tail2 = $"\x1B[38;2;{RED};240;{BLUE}m";
             public static string Tail3 = $"\x1B[38;2;{RED};225;{BLUE}m";
@@ -35,13 +39,10 @@
             public static string Tail15 = $"\x1B[38;2;{RED};45;{BLUE}m";
             public static string Tail16 = $"\x1B[38;2;{RED};30;{BLUE}m";
             public static string Tail17 = $"\x1B[38;2;{RED};15;{BLUE}m"; // Darkest
-            public static string White = $"\x1B[38;2;255;255;255m";
             public static string Reset = "\x1B[0m";
             public static string Black = "\x1B[38;2;0;0;0m";
         }
 
-        // It might seem reduntant since we have already a struct for those colors,
-        // But I had to create the list due to refactoring. (Previously not DRY code)
         /// <summary>
         /// List of colors. 
         /// </summary>
@@ -63,7 +64,14 @@
             Color.Tail14,
             Color.Tail15,
             Color.Tail16,
-            Color.Tail17
+            Color.Tail17,
+            Color.Reset,
             ];
+
+        public static List<byte> colorEncoding = 
+            [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 
+            10, 11, 12, 13, 14, 15, 15, 15, 17, 18];
+        //public static List<byte> colorEncoding = [0,1,1, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 1, 1, 18];
     }
+
 }

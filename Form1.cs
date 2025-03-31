@@ -11,9 +11,9 @@ namespace Matrix
         Logic logic;
         private readonly Timer _timer = new Timer();
 
-        private readonly int cellWidth = 50;
-        private readonly int cellHeight = 50;
-        private readonly Font monoFont = new Font("Consolas", 20);
+        private readonly int cellWidth = 35; //50;
+        private readonly int cellHeight = 45; //50;
+        private readonly Font monoFont = new Font("Consolas", 13); //20);
         private void Form1_Load(object sender, EventArgs e)
         {
             Cursor.Hide(); // Hide mouse
@@ -52,6 +52,25 @@ namespace Matrix
             {
                 Application.Exit();
             }
+            if (e.KeyCode == Keys.P)
+            {
+                if (_timer.Enabled)
+                {
+                    _timer.Stop();
+                }
+                else
+                {
+                    _timer.Start();
+                }
+            }
+            if(e.KeyCode == Keys.F)
+            {
+                _timer.Interval = Consts.GUI_TICK;
+            }
+            if (e.KeyCode == Keys.S)
+            {
+                _timer.Interval = 200;
+            }
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -69,25 +88,27 @@ namespace Matrix
                 //for (int col = 0; col < line.Length; col++)
                 for (int col = 0; col < Consts.MATRIX_WIDTH; col++)
                 {
-                    //char c = line[col];
-                    //if (c == ' ') continue; // Skip spaces if needed
-                    string item = line.Split("\u001b[0m")[col];
+                    //string item = line.Split("\u001b[0m")[col];
+                    string item = line.Split(Consts.DELIMETER)[col];
+                    if (item == "") continue;
                     float x = col * cellWidth;
                     float y = row * cellHeight;
 
                     // Your formatted string
                     //string input = c.ToString();
-                    string input = item;
+                    string index = item.Substring(0, item.Length - 1);
+                    string input = Colors.colors[int.Parse(index)];
 
                     // Match regex
-                    var match = Regex.Match(input, @"\x1B\[38;2;(\d{1,3});(\d{1,3});(\d{1,3})m(.)");
+                    //var match = Regex.Match(input, @"\x1B\[38;2;(\d{1,3});(\d{1,3});(\d{1,3})m(.)");
+                    var match = Regex.Match(input, @"\x1B\[38;2;(\d{1,3});(\d{1,3});(\d{1,3})");
 
                     if (match.Success)
                     {
                         int r = int.Parse(match.Groups[1].Value);
                         int g = int.Parse(match.Groups[2].Value);
                         int b = int.Parse(match.Groups[3].Value);
-                        string character = match.Groups[4].Value;
+                        string character = item.Substring(item.Length - 1);
 
                         // Create a custom brush
                         Brush brush = new SolidBrush(Color.FromArgb(r, g, b));

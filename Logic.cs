@@ -1,11 +1,14 @@
-﻿namespace Matrix
+﻿using System.Diagnostics;
+using System.Threading.Tasks;
+
+namespace Matrix
 {
     internal class Logic
     {
         private readonly string[] matrix = new string[Consts.MATRIX_WIDTH * Consts.MATRIX_HEIGHT];
         private readonly Dictionary<int, int> leadingCharacterIdxs = [];
         private bool isMatrixInitialized = false;
-
+        string[] _characterArrayColored = new string[Consts.MATRIX_SIZE];
         ///-------------------------------------------------------------------------------------------------------------
         /// <summary>
         /// Fill the matrix with characters (strings). Each position in the matrix will be occupied.
@@ -32,20 +35,14 @@
             isMatrixInitialized = true;
         }
 
-        private void PrintToConsole(string[] matrix)
+        private string Print()
         {
-            Console.Clear();
-            Console.Write(Print(matrix));
+            return string.Join("", _characterArrayColored);
         }
 
-        private string Print(string[] matrix)
+        private async void ColoriseMatrix()
         {
-            return string.Join("", matrix);
-        }
-
-        private string[] ColoriseMatrix()
-        {
-            string[] characterArrayColored = new string[Consts.MATRIX_SIZE];
+            //string[] characterArrayColored = new string[Consts.MATRIX_SIZE];
 
             // Idx = index
             // Idxs = indexes
@@ -59,7 +56,7 @@
                     // Newline chars just always move without any other action
                     if (matrix[matrixIdx] == "\n")
                     {
-                        characterArrayColored[matrixIdx] = "\n";
+                        _characterArrayColored[matrixIdx] = "\n";
                     }
 
                     // If there is a leading character activated at a given column
@@ -69,17 +66,19 @@
                     else if (leadingCharacterIdxs[widthIdx] != Consts.COMPLETE_COLUMN_HIDDEN
                         && leadingCharacterIdxs[widthIdx] == heightIdx)
                     {
-                        characterArrayColored = ChosseRightColor(characterArrayColored, matrixIdx);
+                        ChosseRightColor(matrixIdx);
                     }
                     // If no previous conditions match, just leave the character black.
                     else
                     {
-                        characterArrayColored[matrixIdx] = Colors.Color.Black + matrix[matrixIdx] + Colors.Color.Reset;
-                        //characterArrayColored[matrixIdx] = matrix[matrixIdx];
+                        //characterArrayColored[matrixIdx] = Colors.Color.Black + matrix[matrixIdx] + Colors.Color.Reset;
+                        int lastItem = Colors.colorEncoding.Count - 1;
+                        byte blackColor = Colors.colorEncoding[lastItem];
+                        _characterArrayColored[matrixIdx] = blackColor + matrix[matrixIdx] + Consts.DELIMETER;
                     }
                 }   
             }
-            return characterArrayColored;
+            //return characterArrayColored;
         }
 
         ///-------------------------------------------------------------------------------------------------------------
@@ -94,22 +93,24 @@
         /// <param name="characterArrayColored"></param>
         /// <param name="matrixIdx"></param>
         /// <returns></returns>
-        private string[] ChosseRightColor(string[] characterArrayColored, int matrixIdx)
+        private void ChosseRightColor(int matrixIdx)
         {
             for (int i = 0; i < Consts.NR_CHARACTERS_RAIN_DROP; i++)
             {
                 if (matrixIdx >= Consts.MATRIX_WIDTH * i && i > 0)
                 {
                     int offsetRows = matrixIdx - Consts.MATRIX_WIDTH * i;
-                    characterArrayColored[offsetRows] = Colors.colors[i] + matrix[offsetRows] + Colors.Color.Reset;
+                    //characterArrayColored[offsetRows] = Colors.colors[i] + matrix[offsetRows] + Colors.Color.Reset;
+                    _characterArrayColored[offsetRows] = Colors.colorEncoding[i] + matrix[offsetRows] + Consts.DELIMETER;
                 }
                 // The leading character always gets the leading color (default white)
                 else if (i == 0)
                 {
-                    characterArrayColored[matrixIdx] = Colors.Color.White + matrix[matrixIdx] + Colors.Color.Reset;
+                    //characterArrayColored[matrixIdx] = Colors.Color.White + matrix[matrixIdx] + Colors.Color.Reset;
+                    _characterArrayColored[matrixIdx] = Colors.colorEncoding[i] + matrix[matrixIdx] + Consts.DELIMETER;
                 }
             }
-            return characterArrayColored;
+            //return characterArrayColored;
         }
 
         void UpdateLeadCharactersPositions()
@@ -125,6 +126,7 @@
                 // Meaning this if block is going to be executed only 1x in the whole runtime.
                 if (!indexInitialised)
                 {
+                    addCharacter = random.Next(0, 100) < 1;
                     if (addCharacter)
                     {
                         leadingCharacterIdxs.Add(widthIndex, Consts.START_POSITION);
@@ -160,22 +162,16 @@
         
         public string Main()
         {
+            //string[] x = new string[Consts.MATRIX_SIZE];
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
             InitializeMatrix();
             UpdateLeadCharactersPositions();
-            string[] x = ColoriseMatrix();
-            return Print(x);
-
+            ColoriseMatrix();
+            //Task.Run(() => ColoriseMatrix()).Wait();
+            stopwatch.Stop();
+            var elapsed = stopwatch.ElapsedMilliseconds;
+            return Print();
         }
-        //public void Main()
-        //{
-        //    while (true)
-        //    {
-        //        InitializeMatrix();
-        //        UpdateLeadCharactersPositions();
-        //        string[] x = ColoriseMatrix();
-        //        PrintToConsole(x);
-        //        Thread.Sleep(1000);
-        //    }
-        //}
     }
 }
