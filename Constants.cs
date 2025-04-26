@@ -7,11 +7,11 @@
         /// <summary>
         /// The width of the matrix. Meaning how many columns we have in the matrix.
         /// </summary>
-        public const int MATRIX_WIDTH = 115; //80;
+        public const int MATRIX_WIDTH = 80;
         /// <summary>
         /// The height of the matrix. Meaning how many rows we have in the matrix.
         /// </summary>
-        public const int MATRIX_HEIGHT = 73; //65;
+        public const int MATRIX_HEIGHT = 75;
         /// <summary>
         /// The size of the matrix. Meaning how many cells we have in the matrix.
         /// </summary>
@@ -26,7 +26,7 @@
         /// <remarks>For our purpouses 1ms, because in current implementation
         /// the algorithm is slower anyway, so the real update is going to be slower.
         /// </remarks>
-        public const int GUI_TICK = 16;
+        public const int GUI_TICK = 10;
 
         /// <summary>
         /// The percentage of spawn chance for a rain drop.
@@ -39,7 +39,7 @@
         /// <remarks>Current implementation does not have dinamic adjustment based on the lentgh
         /// of rain drop. If you want to make the raindrop longer, increment the number here and
         /// add more colors at relevant places.</remarks>
-        public const int NR_CHARACTERS_RAIN_DROP = 17+9+2;
+        public const int NR_CHARACTERS_RAIN_DROP = 34;
 
         // ------------------------------------------------------------------------------------------------------------
         // CODES TO DETERMINE IF A COLUMN IS HIDDEN OR READY TO "START FALLING"

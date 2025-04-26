@@ -11,9 +11,9 @@ namespace Matrix
         Logic logic;
         private readonly Timer _timer = new Timer();
 
-        private readonly int cellWidth = 35; //50;
-        private readonly int cellHeight = 45; //50;
-        private readonly Font monoFont = new Font("Consolas", 13); //20);
+        private readonly int cellWidth = 50; //50;
+        private readonly int cellHeight = 50; //50;
+        private readonly Font monoFont = new Font("Consolas", 18); //18);
         private void Form1_Load(object sender, EventArgs e)
         {
             Cursor.Hide(); // Hide mouse

@@ -19,7 +19,7 @@ namespace Matrix
             if (isMatrixInitialized)
                 return;
 
-            string alphabet = "01";// "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
             for (int i = 0; i < Consts.MATRIX_SIZE; i++)
             {
@@ -170,6 +170,7 @@ namespace Matrix
             ColoriseMatrix();
             //Task.Run(() => ColoriseMatrix()).Wait();
             stopwatch.Stop();
+            Thread.Sleep(7);
             var elapsed = stopwatch.ElapsedMilliseconds;
             return Print();
         }
