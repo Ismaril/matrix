@@ -17,4 +17,4 @@ Refactoring is needed to make it more readable.
 Documentation is missing.
 
 # Result:
-![demonstration](matrix.jpg)
+![demonstration](matrix.JPG)
