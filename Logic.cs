@@ -1,38 +1,58 @@
-﻿using System.Diagnostics;
-using System.Threading.Tasks;
-
-namespace Matrix
+﻿namespace Matrix
 {
+    ///----------------------------------------------------------------------------------------------------------------
+    /// <summary>
+    /// Class holding the logic of the application.
+    /// </summary>
     internal class Logic
     {
-        private readonly string[] matrix = new string[Consts.MATRIX_WIDTH * Consts.MATRIX_HEIGHT];
-        private readonly Dictionary<int, int> leadingCharacterIdxs = [];
-        private bool isMatrixInitialized = false;
-        string[] _characterArrayColored = new string[Consts.MATRIX_SIZE];
-        ///-------------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Matrix holding the characters. Each position in the matrix will be occupied.
+        /// </summary>
+        private readonly string[] _matrix = new string[Consts.MATRIX_WIDTH * Consts.MATRIX_HEIGHT];
+        /// <summary>
+        /// Dictionary holding the indexes of the leading characters in the matrix. 
+        /// By leading character we mean the first character in a column which is falling down.
+        /// (White colored character.)
+        /// </summary>
+        private readonly Dictionary<int, int> _leadingCharacterIdxs = [];
+        /// <summary>
+        /// Boolean variable to determine whether the matrix is initialized or not.
+        /// </summary>
+        private bool _isMatrixInitialized = false;
+        /// <summary>
+        /// Array holding the color encodings with characters. Each position in the array will be occupied.
+        /// </summary>
+        private string[] _characterArrayColored = new string[Consts.MATRIX_SIZE];
+
+        ///------------------------------------------------------------------------------------------------------------
         /// <summary>
         /// Fill the matrix with characters (strings). Each position in the matrix will be occupied.
         /// In the console application the row always ends with newline character.
         /// </summary>
-        void InitializeMatrix()
+        private void InitializeMatrix()
         {
-            if (isMatrixInitialized)
+            if (_isMatrixInitialized)
+            {
                 return;
-
-            string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            }
 
             for (int i = 0; i < Consts.MATRIX_SIZE; i++)
             {
+                // At the end of each row add a newline character.
                 if (i % Consts.MATRIX_WIDTH == Consts.MATRIX_WIDTH - 1)
-                    matrix[i] = "\n";
+                {
+                    _matrix[i] = "\n";
+                }
+                // Else add a random character from the alphabet.
                 else
                 {
-                    string character = alphabet[new Random().Next(0, alphabet.Length)].ToString();
-                    matrix[i] = character;
+                    int random_index = new Random().Next(0, Consts.ALPHABET.Length);
+                    string character = Consts.ALPHABET[random_index].ToString();
+                    _matrix[i] = character;
                 }
-
             }
-            isMatrixInitialized = true;
+            _isMatrixInitialized = true;
         }
 
         private string Print()
@@ -40,6 +60,10 @@ namespace Matrix
             return string.Join("", _characterArrayColored);
         }
 
+        ///------------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 
+        /// </summary>
         private async void ColoriseMatrix()
         {
             //string[] characterArrayColored = new string[Consts.MATRIX_SIZE];
@@ -54,34 +78,31 @@ namespace Matrix
                     int matrixIdx = heightIdx * Consts.MATRIX_WIDTH + widthIdx;
 
                     // Newline chars just always move without any other action
-                    if (matrix[matrixIdx] == "\n")
+                    if (_matrix[matrixIdx] == "\n")
                     {
                         _characterArrayColored[matrixIdx] = "\n";
                     }
-
                     // If there is a leading character activated at a given column
                     // and we are at a row which holds the leading character, we therefore get
                     // an XY coordinates of a leading character in the matrix and we can compute the offests
                     // also for the trailing characters and assign them relevant colors.
-                    else if (leadingCharacterIdxs[widthIdx] != Consts.COMPLETE_COLUMN_HIDDEN
-                        && leadingCharacterIdxs[widthIdx] == heightIdx)
+                    else if (_leadingCharacterIdxs[widthIdx] != Consts.COMPLETE_COLUMN_HIDDEN
+                        && _leadingCharacterIdxs[widthIdx] == heightIdx)
                     {
-                        ChosseRightColor(matrixIdx);
+                        ChosseRightColor(matrixIdx, _leadingCharacterIdxs[widthIdx] == Consts.COMPLETE_COLUMN_HIDDEN);
                     }
-                    // If no previous conditions match, just leave the character black.
+                    //If no previous conditions match, just leave the character black.
                     else
                     {
-                        //characterArrayColored[matrixIdx] = Colors.Color.Black + matrix[matrixIdx] + Colors.Color.Reset;
                         int lastItem = Colors.colorEncoding.Count - 1;
                         byte blackColor = Colors.colorEncoding[lastItem];
-                        _characterArrayColored[matrixIdx] = blackColor + matrix[matrixIdx] + Consts.DELIMETER;
+                        _characterArrayColored[matrixIdx] = blackColor + _matrix[matrixIdx] + Consts.DELIMETER;
                     }
                 }   
             }
-            //return characterArrayColored;
         }
 
-        ///-------------------------------------------------------------------------------------------------------------
+        ///------------------------------------------------------------------------------------------------------------
         /// <summary>
         /// At the 0 position (row) always choose the leading color. (Default white)
         /// Then choose a trailing color which with each other character fades away.
@@ -90,36 +111,44 @@ namespace Matrix
         /// With this we are able to exclude index out of array exception when we are "looking back"
         /// with the offset when the leading character starts falling from the upper side of the matrix.
         /// </summary>
-        /// <param name="characterArrayColored"></param>
         /// <param name="matrixIdx"></param>
         /// <returns></returns>
-        private void ChosseRightColor(int matrixIdx)
+        private void ChosseRightColor(int matrixIdx, bool hidden)
         {
             for (int i = 0; i < Consts.NR_CHARACTERS_RAIN_DROP; i++)
             {
+                // Select an appropriate traling color
                 if (matrixIdx >= Consts.MATRIX_WIDTH * i && i > 0)
                 {
                     int offsetRows = matrixIdx - Consts.MATRIX_WIDTH * i;
-                    //characterArrayColored[offsetRows] = Colors.colors[i] + matrix[offsetRows] + Colors.Color.Reset;
-                    _characterArrayColored[offsetRows] = Colors.colorEncoding[i] + matrix[offsetRows] + Consts.DELIMETER;
+                    _characterArrayColored[offsetRows] = Colors.colorEncoding[i] + _matrix[offsetRows] + Consts.DELIMETER;
                 }
                 // The leading character always gets the leading color (default white)
                 else if (i == 0)
                 {
-                    //characterArrayColored[matrixIdx] = Colors.Color.White + matrix[matrixIdx] + Colors.Color.Reset;
-                    _characterArrayColored[matrixIdx] = Colors.colorEncoding[i] + matrix[matrixIdx] + Consts.DELIMETER;
+                    _characterArrayColored[matrixIdx] = Colors.colorEncoding[i] + _matrix[matrixIdx] + Consts.DELIMETER;
                 }
+                // TODO: Try to refactor that a black is here
+                // If no previous conditions match, just leave the character black.
+                //else if (hidden)
+                //{
+                //    int lastItem = Colors.colorEncoding.Count - 1;
+                //    byte blackColor = Colors.colorEncoding[lastItem];
+                //    _characterArrayColored[matrixIdx] = blackColor + _matrix[matrixIdx] + Consts.DELIMETER;
+                //}
             }
-            //return characterArrayColored;
         }
 
-        void UpdateLeadCharactersPositions()
+        ///------------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Update the leading characters positions in the matrix. The leading character is 
+        /// </summary>
+        private void UpdateLeadCharactersPositions()
         {
             for (int widthIndex = 0; widthIndex < Consts.MATRIX_WIDTH; widthIndex++)
             {
                 Random random = new Random();
-
-                bool indexInitialised = leadingCharacterIdxs.TryGetValue(widthIndex, out int startPosition);
+                bool indexInitialised = _leadingCharacterIdxs.TryGetValue(widthIndex, out int startPosition);
                 bool addCharacter = random.Next(0, 100) < Consts.PERCENTAGE_OF_SPAWN_CHANCE;
 
                 // This first if block is executed only during the very first round, when a dictionary is empty.
@@ -129,11 +158,11 @@ namespace Matrix
                     addCharacter = random.Next(0, 100) < 1;
                     if (addCharacter)
                     {
-                        leadingCharacterIdxs.Add(widthIndex, Consts.START_POSITION);
+                        _leadingCharacterIdxs.Add(widthIndex, Consts.START_POSITION);
                     }
                     else
                     {
-                        leadingCharacterIdxs.Add(widthIndex, Consts.COMPLETE_COLUMN_HIDDEN);
+                        _leadingCharacterIdxs.Add(widthIndex, Consts.COMPLETE_COLUMN_HIDDEN);
                     }
                 }
                 // This if block is executed once the dictionary already holds values at all positions.
@@ -141,37 +170,36 @@ namespace Matrix
                 else if (indexInitialised)
                 {
                     // Whether a leading character should spawn at a given column.
-                    if (leadingCharacterIdxs[widthIndex] == Consts.COMPLETE_COLUMN_HIDDEN && addCharacter)
+                    if (_leadingCharacterIdxs[widthIndex] == Consts.COMPLETE_COLUMN_HIDDEN && addCharacter)
                     {
-                        leadingCharacterIdxs[widthIndex] = Consts.START_POSITION;
+                        _leadingCharacterIdxs[widthIndex] = Consts.START_POSITION;
                     }
                     // Whether a leading character at a given column should move one row down.
-                    else if (leadingCharacterIdxs[widthIndex] != Consts.COMPLETE_COLUMN_HIDDEN)
+                    else if (_leadingCharacterIdxs[widthIndex] != Consts.COMPLETE_COLUMN_HIDDEN)
                     {
-                        leadingCharacterIdxs[widthIndex] = leadingCharacterIdxs[widthIndex] += 1;
+                        _leadingCharacterIdxs[widthIndex] = _leadingCharacterIdxs[widthIndex] += 1;
                     }
                     // Whether a leading character is out of the matrix. (Fell completely
                     // down)
-                    if (leadingCharacterIdxs[widthIndex] > Consts.MATRIX_HEIGHT)
+                    if (_leadingCharacterIdxs[widthIndex] > Consts.MATRIX_HEIGHT)
                     {
-                        leadingCharacterIdxs[widthIndex] = Consts.COMPLETE_COLUMN_HIDDEN;
+                        _leadingCharacterIdxs[widthIndex] = Consts.COMPLETE_COLUMN_HIDDEN;
                     }
                 }
             }
         }
-        
+
+        /// -----------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Main method of the logic which is called from the GUI.
+        /// </summary>
+        /// <returns></returns>
         public string Main()
         {
-            //string[] x = new string[Consts.MATRIX_SIZE];
-            Stopwatch stopwatch = new Stopwatch();
-            stopwatch.Start();
             InitializeMatrix();
             UpdateLeadCharactersPositions();
             ColoriseMatrix();
-            //Task.Run(() => ColoriseMatrix()).Wait();
-            stopwatch.Stop();
-            Thread.Sleep(7);
-            var elapsed = stopwatch.ElapsedMilliseconds;
+            //Thread.Sleep(2);
             return Print();
         }
     }
